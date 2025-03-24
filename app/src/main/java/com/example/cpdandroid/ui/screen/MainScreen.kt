@@ -48,6 +48,13 @@ fun TestMainScreen(navController: NavController) {
                     .fillMaxWidth()
                     .padding(16.dp)
             ) { Text("블로그 화면으로 이동하기") }
+
+            Button(
+                onClick =  { navController.navigate("Counter") },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+            ) { Text("카운터 화면으로 이동") }
         }
     }
 }
