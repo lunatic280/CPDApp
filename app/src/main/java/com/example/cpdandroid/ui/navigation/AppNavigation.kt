@@ -5,8 +5,10 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.cpdandroid.model.BlogViewModel
 import com.example.cpdandroid.ui.screen.BlogScreen
 import com.example.cpdandroid.ui.screen.CounterScreen
+import com.example.cpdandroid.ui.screen.CreateViewScreen
 import com.example.cpdandroid.ui.screen.TestMainScreen
 
 sealed class Screen(val route: String) {
@@ -23,6 +25,7 @@ fun AppNavigation() {
     NavHost(navController, startDestination = "Home") {
         composable("Home") { TestMainScreen(navController) }
         composable("Blog") { BlogScreen(navController) }
-        composable("Counter") { CounterScreen(viewModel = viewModel(), navController)}
+        composable("Counter") { CounterScreen(viewModel = viewModel(), navController) }
+        composable("CreateView") { CreateViewScreen(viewModel = viewModel(), navController)}
     }
 }

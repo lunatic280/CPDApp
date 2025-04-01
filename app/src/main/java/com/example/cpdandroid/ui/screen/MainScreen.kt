@@ -55,6 +55,13 @@ fun TestMainScreen(navController: NavController) {
                     .fillMaxWidth()
                     .padding(16.dp)
             ) { Text("카운터 화면으로 이동") }
+
+            Button(
+                onClick = { navController.navigate("CreateView") },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+            ) { Text("블로글 생성하기") }
         }
     }
 }
