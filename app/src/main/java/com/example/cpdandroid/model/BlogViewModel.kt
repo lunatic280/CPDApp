@@ -13,6 +13,9 @@ class BlogViewModel : ViewModel() {
     private val _blogs = MutableStateFlow<List<Blog>>(emptyList())
     val blogs: StateFlow<List<Blog>> = _blogs
 
+    private val _selectedBlog = MutableStateFlow<Blog?>(null)  // ✅ 단일 블로그 상태 추가
+    val selectedBlog: StateFlow<Blog?> = _selectedBlog
+
     private val _isPostSuccessful = MutableStateFlow(false) // ✅ 게시 성공 여부를 저장할 상태
     val isPostSuccessful: StateFlow<Boolean> = _isPostSuccessful
 
@@ -41,6 +44,38 @@ class BlogViewModel : ViewModel() {
             } catch (e: Exception) {
                 e.printStackTrace()
                 println("Error fetching blogs: ${e.localizedMessage}")
+            }
+        }
+    }
+
+    fun getBlog(id: Long) {
+        viewModelScope.launch {
+            try {
+                val response = RetrofitClient.api.getBlog(id)
+
+                if (response.isSuccessful) {
+                    response.body()?.let { blog ->
+                        _selectedBlog.value = blog
+                    }
+                } else {
+                    println("Error: ${response.errorBody()?.string()}")
+                }
+
+            } catch (e: Exception) {
+                e.printStackTrace()
+                println("Error: ${e.localizedMessage}")
+            }
+
+        }
+    }
+
+    fun updateBlog(id: String, title: String, content: String) {
+        viewModelScope.launch {
+            try {
+
+            } catch (e: Exception) {
+                e.printStackTrace()
+                println("Error: ${e.localizedMessage}")
             }
         }
     }

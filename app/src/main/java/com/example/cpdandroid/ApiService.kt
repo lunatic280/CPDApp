@@ -11,6 +11,7 @@ import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.POST
 import retrofit2.http.PUT
+import retrofit2.http.Path
 
 data class MessageResponse(val message: String)
 
@@ -22,16 +23,17 @@ interface ApiService {
     suspend fun getAllBlog(): List<Blog>
 
     @GET("/api/{id}")
-    suspend fun getBlog(): Blog
+    suspend fun getBlog(@Path("id") id: Long): Response<Blog>
 
     @POST("/api/create-blog")
     suspend fun createBlog(@Body blog: Blog): Response<Blog>
 
     @PUT("/api/update/{id}")
-    suspend fun updateBlog(): Blog
+    suspend fun updateBlog(@Path("id") id: Long, @Body blog: Blog): Blog
 
     @DELETE("/api/{id}")
-    suspend fun deleteBlog(): Unit
+    suspend fun deleteBlog(@Path("id") id: Long)
+
 
 
 

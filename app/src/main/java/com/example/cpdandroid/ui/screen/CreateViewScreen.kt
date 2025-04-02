@@ -63,7 +63,7 @@ fun CreateViewScreen(viewModel: BlogViewModel, navController: NavController) {
                 OutlinedTextField(
                     value = content,
                     onValueChange = { content = it },
-                    label = { Text("Title") },
+                    label = { Text("Content") },
                     modifier = Modifier.fillMaxWidth()
                 )
             }
