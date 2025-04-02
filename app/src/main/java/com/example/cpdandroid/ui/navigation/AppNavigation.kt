@@ -24,7 +24,7 @@ fun AppNavigation() {
 
     NavHost(navController, startDestination = "Home") {
         composable("Home") { TestMainScreen(navController) }
-        composable("Blog") { BlogScreen(navController) }
+        composable("Blog") { BlogScreen(viewModel = viewModel(), navController) }
         composable("Counter") { CounterScreen(viewModel = viewModel(), navController) }
         composable("CreateView") { CreateViewScreen(viewModel = viewModel(), navController)}
     }

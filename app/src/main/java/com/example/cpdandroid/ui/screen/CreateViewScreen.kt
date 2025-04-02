@@ -9,6 +9,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -24,6 +26,17 @@ import com.example.cpdandroid.ui.components.CustomTopBar
 
 @Composable
 fun CreateViewScreen(viewModel: BlogViewModel, navController: NavController) {
+
+    val isPostSuccessful by viewModel.isPostSuccessful.collectAsState() // ✅ 상태 감지
+
+    LaunchedEffect(isPostSuccessful) {
+        if (isPostSuccessful) {
+            navController.navigate("Home") { // ✅ 메인 화면으로 이동
+                popUpTo("Home") { inclusive = true } // ✅ 이전 화면 삭제 (뒤로가기 방지)
+            }
+            viewModel.resetPostStatus() // ✅ 상태 초기화
+        }
+    }
 
     var title by remember { mutableStateOf("") }
     var content by remember { mutableStateOf("") }
@@ -74,4 +87,5 @@ fun CreateViewScreen(viewModel: BlogViewModel, navController: NavController) {
 fun TestCreateViewScreen() {
     val navController = rememberNavController()
 
+    CreateViewScreen(viewModel(), navController)
 }
