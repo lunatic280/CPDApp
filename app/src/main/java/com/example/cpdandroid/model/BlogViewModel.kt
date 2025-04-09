@@ -69,7 +69,7 @@ class BlogViewModel : ViewModel() {
         }
     }
 
-    fun updateBlog(id: String, title: String, content: String) {
+    fun updateBlog(id: Long, title: String, content: String) {
         viewModelScope.launch {
             try {
 

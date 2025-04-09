@@ -13,6 +13,8 @@ import com.example.cpdandroid.ui.screen.BlogScreen
 import com.example.cpdandroid.ui.screen.BlogUpdateScreen
 import com.example.cpdandroid.ui.screen.CounterScreen
 import com.example.cpdandroid.ui.screen.CreateViewScreen
+import com.example.cpdandroid.ui.screen.LoginScreen
+import com.example.cpdandroid.ui.screen.SignupScreen
 import com.example.cpdandroid.ui.screen.TestMainScreen
 
 sealed class Screen(val route: String) {
@@ -26,7 +28,7 @@ fun AppNavigation() {
 
     val navController = rememberNavController()
 
-    NavHost(navController, startDestination = "Home") {
+    NavHost(navController, startDestination = "login") {
         composable("Home") { TestMainScreen(navController) }
         composable("Blog") { BlogScreen(viewModel = viewModel(), navController) }
         composable("Counter") { CounterScreen(viewModel = viewModel(), navController) }
@@ -45,5 +47,14 @@ fun AppNavigation() {
             val id = backStackEntry.arguments?.getLong("id") ?: 0L
             BlogUpdateScreen(id, viewModel = viewModel(), navController)
         }
+        composable("signup") { SignupScreen(
+            viewModel = viewModel(),
+            navController,
+            onSignupSuccess = { navController.navigate("login") }) }
+        composable("login") { LoginScreen(
+            viewModel = viewModel(),
+            navController,
+            onSignupSuccess = { navController.navigate("Home") }
+        )}
     }
 }

@@ -1,6 +1,8 @@
 package com.example.app.network
 
 import com.example.cpdandroid.data.Blog
+import com.example.cpdandroid.data.LoginDto
+import com.example.cpdandroid.data.UserDto
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import retrofit2.Response
@@ -33,6 +35,12 @@ interface ApiService {
 
     @DELETE("/api/{id}")
     suspend fun deleteBlog(@Path("id") id: Long)
+
+    @POST("/api/auth/signup")
+    suspend fun signup(@Body userDto: UserDto): Response<MessageResponse>
+
+    @POST("/api/auth/login")
+    suspend fun login(@Body loginDto: LoginDto): Response<MessageResponse>
 
 
 
