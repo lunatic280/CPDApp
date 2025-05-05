@@ -4,11 +4,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.app.network.RetrofitClient
 import com.example.cpdandroid.data.Blog
+import com.example.cpdandroid.data.LoginDto
+import com.example.cpdandroid.data.UserDto
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-class BlogViewModel : ViewModel() {
+class BlogViewModel(
+    private val authViewModel: AuthViewModel? = null
+) : ViewModel() {
 
     private val _blogs = MutableStateFlow<List<Blog>>(emptyList())
     val blogs: StateFlow<List<Blog>> = _blogs
@@ -19,22 +23,21 @@ class BlogViewModel : ViewModel() {
     private val _isPostSuccessful = MutableStateFlow(false) // ✅ 게시 성공 여부를 저장할 상태
     val isPostSuccessful: StateFlow<Boolean> = _isPostSuccessful
 
-    fun createBlog(title: String, content: String) {
+    fun createBlog(title: String, content: String, authorEmail: String, authorName: String) {
         viewModelScope.launch {
             try {
-                val newBlog = Blog(title = title, content = content)
-                val response = RetrofitClient.api.createBlog(newBlog)
-                println("Created Blog: $response")
-
-                if (response.isSuccessful) {
-                    _isPostSuccessful.value = true // ✅ 성공 상태 업데이트
-                }
+                val author = UserDto(name = authorName, email = authorEmail)
+                val blog = Blog(title = title, content = content, author = author)
+                val response = RetrofitClient.api.createBlog(blog)
+                println("Create Blog Response: $response")
+                _isPostSuccessful.value = response.isSuccessful
             } catch (e: Exception) {
-                e.printStackTrace() // ✅ 예외 스택 트레이스 출력
-                println("Error: ${e.localizedMessage}")
+                e.printStackTrace()
+                _isPostSuccessful.value = false
             }
         }
     }
+
 
     fun getAllBlog() {
         viewModelScope.launch {

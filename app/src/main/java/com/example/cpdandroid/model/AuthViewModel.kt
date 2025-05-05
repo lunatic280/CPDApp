@@ -17,11 +17,17 @@ sealed class AuthState {
     data class Error(val error: String) : AuthState()
 }
 
-class AuthViewModel: ViewModel() {
-
+class AuthViewModel : ViewModel() {
+    // 로그인 상태
     private val _authState = mutableStateOf<AuthState>(AuthState.Idle)
     val authState: State<AuthState> = _authState
 
+    // 실시간 사용자 정보 저장
+    private val _userEmail = mutableStateOf<String?>(null)
+    val userEmail: State<String?> = _userEmail
+
+    private val _userName = mutableStateOf<String?>(null)
+    val userName: State<String?> = _userName
 
     fun signup(name: String, email: String, password: String) {
         _authState.value = AuthState.Loading
@@ -31,8 +37,11 @@ class AuthViewModel: ViewModel() {
                 val response = RetrofitClient.api.signup(userDto)
 
                 if (response.isSuccessful) {
-                    val message = response.body()?.message ?: "회원가입 성공"
-                    _authState.value = AuthState.Success(message)
+                    val msg = response.body()?.message ?: "회원가입 성공"
+                    _authState.value = AuthState.Success(msg)
+                    // 가입과 동시에 정보 저장
+                    _userEmail.value = email
+                    _userName.value = name
                 } else {
                     _authState.value = AuthState.Error("회원가입 실패: ${response.code()}")
                 }
@@ -49,11 +58,14 @@ class AuthViewModel: ViewModel() {
                 val loginDto = LoginDto(email, password)
                 val response = RetrofitClient.api.login(loginDto)
                 if (response.isSuccessful) {
-                    val message = response.body()?.message ?: "로그인 성공"
-                    _authState.value = AuthState.Success(message)
+                    val msg = response.body()?.message ?: "로그인 성공"
+                    _authState.value = AuthState.Success(msg)
+                    // 로그인 성공 시 사용자 정보 저장
+                    _userEmail.value = email
+                    _userName.value = email.substringBefore("@") // 예시: 이메일 앞부분 사용
                 } else {
-                    val error = response.errorBody()?.string() ?: "로그인 실패"
-                    _authState.value = AuthState.Error("로그인 실패: $error")
+                    val err = response.errorBody()?.string() ?: "로그인 실패"
+                    _authState.value = AuthState.Error("로그인 실패: $err")
                 }
             } catch (e: Exception) {
                 _authState.value = AuthState.Error("로그인 실패: ${e.localizedMessage}")

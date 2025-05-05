@@ -25,16 +25,21 @@ import com.example.cpdandroid.ui.components.CustomBottomBar
 import com.example.cpdandroid.ui.components.CustomTopBar
 
 @Composable
-fun CreateViewScreen(viewModel: BlogViewModel, navController: NavController) {
+fun CreateViewScreen(
+    viewModel: BlogViewModel,
+    navController: NavController,
+    authorEmail: String, // 이메일 추가
+    authorName: String   // 작성자 이름 추가
+) {
 
-    val isPostSuccessful by viewModel.isPostSuccessful.collectAsState() // ✅ 상태 감지
+    val isPostSuccessful by viewModel.isPostSuccessful.collectAsState()
 
     LaunchedEffect(isPostSuccessful) {
         if (isPostSuccessful) {
-            navController.navigate("Home") { // ✅ 메인 화면으로 이동
-                popUpTo("Home") { inclusive = true } // ✅ 이전 화면 삭제 (뒤로가기 방지)
+            navController.navigate("Home") {
+                popUpTo("Home") { inclusive = true }
             }
-            viewModel.resetPostStatus() // ✅ 상태 초기화
+            viewModel.resetPostStatus()
         }
     }
 
@@ -42,33 +47,27 @@ fun CreateViewScreen(viewModel: BlogViewModel, navController: NavController) {
     var content by remember { mutableStateOf("") }
 
     Scaffold(
-        topBar = {
-            CustomTopBar(title = "상단 앱바")
-        },
+        topBar = { CustomTopBar(title = "상단 앱바") },
         bottomBar = { CustomBottomBar(title = "하단 앱 바 ") }
-    ) {innerPadding ->
+    ) { innerPadding ->
         Column(
             modifier = Modifier.padding(innerPadding)
         ) {
-            Column {
-                OutlinedTextField(
-                    value = title,
-                    onValueChange = { title = it },
-                    label = { Text("Title") },
-                    modifier = Modifier.fillMaxWidth()
-                )
-            }
+            OutlinedTextField(
+                value = title,
+                onValueChange = { title = it },
+                label = { Text("Title") },
+                modifier = Modifier.fillMaxWidth()
+            )
 
-            Column {
-                OutlinedTextField(
-                    value = content,
-                    onValueChange = { content = it },
-                    label = { Text("Content") },
-                    modifier = Modifier.fillMaxWidth()
-                )
-            }
+            OutlinedTextField(
+                value = content,
+                onValueChange = { content = it },
+                label = { Text("Content") },
+                modifier = Modifier.fillMaxWidth()
+            )
 
-            Button(onClick = { viewModel.createBlog(title, content) }) {
+            Button(onClick = { viewModel.createBlog(title, content, authorEmail, authorName) }) {
                 Text("게시하기")
             }
             Button(onClick = { navController.popBackStack() }) {
@@ -76,16 +75,16 @@ fun CreateViewScreen(viewModel: BlogViewModel, navController: NavController) {
             }
         }
     }
-
 }
 
 
 
 
-@Preview(showBackground = true)
-@Composable
-fun TestCreateViewScreen() {
-    val navController = rememberNavController()
 
-    CreateViewScreen(viewModel(), navController)
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun TestCreateViewScreen() {
+//    val navController = rememberNavController()
+//
+//    CreateViewScreen(viewModel(), navController)
+//}
