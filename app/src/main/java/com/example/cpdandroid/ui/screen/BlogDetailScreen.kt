@@ -52,7 +52,7 @@ fun BlogDetailScreen(id: Long, viewModel: BlogViewModel, navController: NavContr
 
             Spacer(modifier = Modifier.weight(1f)) // 버튼을 하단으로 밀기 위한 Spacer
             Button(
-                onClick = { navController.navigate("BlogDetail/update/{id}") },
+                onClick = { navController.navigate("BlogDetail/update/${id}") },
                 modifier = Modifier.fillMaxWidth().padding(16.dp)
             ) {
                 Text("수정하기")
