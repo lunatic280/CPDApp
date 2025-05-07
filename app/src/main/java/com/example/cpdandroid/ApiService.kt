@@ -38,7 +38,7 @@ interface ApiService {
     @PUT("/api/update/{id}")
     suspend fun updateBlog(@Path("id") id: Long, @Body blog: Blog): Response<Blog>
 
-    @DELETE("/api/{id}")
+    @DELETE("/api/delete/{id}")
     suspend fun deleteBlog(@Path("id") id: Long)
 
     @POST("/api/auth/signup")

@@ -29,17 +29,12 @@ fun BlogDetailScreen(
     authViewModel: AuthViewModel,
     navController: NavController
 ) {
-    // 1) blog 데이터 로드
     val blog by blogViewModel.selectedBlog.collectAsState()
     LaunchedEffect(id) {
         blogViewModel.getBlog(id)
     }
 
-    // 2) AuthViewModel 에서 userEmail 상태 직접 구독
-    //    AuthViewModel.kt 에 정의된 프로퍼티 이름입니다 :contentReference[oaicite:0]{index=0}:contentReference[oaicite:1]{index=1}
     val userEmail by authViewModel.userEmail
-
-    // 3) 수정 권한 플래그 계산
     val canEdit = remember(blog, userEmail) {
         blog?.author?.email == userEmail
     }
@@ -60,7 +55,6 @@ fun BlogDetailScreen(
 
             Spacer(Modifier.weight(1f))
 
-            // 4) 수정 버튼: canEdit 에 따라 활성화/비활성화
             Button(
                 onClick = { navController.navigate("BlogDetail/update/$id") },
                 enabled = canEdit,
@@ -79,7 +73,18 @@ fun BlogDetailScreen(
             ) {
                 Text("뒤로가기")
             }
+
+            Button(
+                onClick = { navController.navigate("BlogDetail/delete/$id") },
+                enabled = canEdit,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+            ) {
+                Text(if (canEdit) "삭제" else "삭제 권한 없음")
+            }
         }
     }
 }
+
 

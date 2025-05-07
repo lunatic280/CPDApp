@@ -22,6 +22,9 @@ class BlogViewModel(
 
     private val _isPostSuccessful = MutableStateFlow(false) // ✅ 게시 성공 여부를 저장할 상태
     val isPostSuccessful: StateFlow<Boolean> = _isPostSuccessful
+    
+//    private val _isDeleteSuccessful = MutableStateFlow(false)
+//    val isDeleteSuccessful: StateFlow<Boolean> = _isDeleteSuccessful //삭제 게시 여부
 
     fun createBlog(title: String, content: String, authorEmail: String, authorName: String) {
         viewModelScope.launch {
@@ -83,6 +86,17 @@ class BlogViewModel(
             } catch (e: Exception) {
                 e.printStackTrace()
                 _isPostSuccessful.value = false
+            }
+        }
+    }
+    
+    fun deleteBlog(id: Long) {
+        viewModelScope.launch { 
+            try {
+                val response = RetrofitClient.api.deleteBlog(id)
+                println("Delete Blog Response: ${response}")
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
         }
     }
