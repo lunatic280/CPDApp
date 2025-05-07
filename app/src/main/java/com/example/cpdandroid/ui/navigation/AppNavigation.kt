@@ -69,7 +69,7 @@ fun AppNavigation() {
             val id = backStackEntry.arguments?.getLong("id") ?: return@composable
             BlogDetailScreen(
                 id = id,
-                viewModel = blogViewModel,
+                blogViewModel, authViewModel,
                 navController = navController
             )
         }
@@ -82,7 +82,9 @@ fun AppNavigation() {
             BlogUpdateScreen(
                 id = id,
                 viewModel = blogViewModel,
-                navController = navController
+                navController = navController,
+                authorEmail   = authViewModel.userEmail.value ?: "",
+                authorName    = authViewModel.userName.value  ?: ""
             )
         }
 

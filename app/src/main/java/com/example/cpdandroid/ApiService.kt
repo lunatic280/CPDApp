@@ -36,9 +36,7 @@ interface ApiService {
     suspend fun createBlog(@Body blog: Blog): Response<Blog>
 
     @PUT("/api/update/{id}")
-
-
-    suspend fun updateBlog(@Path("id") id: Long, @Body blog: Blog): Blog
+    suspend fun updateBlog(@Path("id") id: Long, @Body blog: Blog): Response<Blog>
 
     @DELETE("/api/{id}")
     suspend fun deleteBlog(@Path("id") id: Long)

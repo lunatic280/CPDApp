@@ -24,7 +24,13 @@ import com.example.cpdandroid.ui.components.CustomBottomBar
 import com.example.cpdandroid.ui.components.CustomTopBar
 
 @Composable
-fun BlogUpdateScreen(id: Long, viewModel: BlogViewModel, navController: NavController) {
+fun BlogUpdateScreen(
+    id: Long,
+    viewModel: BlogViewModel,
+    navController: NavController,
+    authorEmail: String, // 이메일 추가
+    authorName: String   // 작성자 이름 추가
+    ) {
     val blog by viewModel.selectedBlog.collectAsState()
     var title by remember { mutableStateOf("") }
     var content by remember { mutableStateOf("") }
@@ -67,7 +73,7 @@ fun BlogUpdateScreen(id: Long, viewModel: BlogViewModel, navController: NavContr
 
             Button(
                 onClick = {
-                    viewModel.updateBlog(blog?.id ?: return@Button, title, content)
+                    viewModel.updateBlog(blog?.id ?: return@Button, title, content, authorEmail, authorName)
                     navController.popBackStack()
                 },
                 modifier = Modifier.fillMaxWidth().padding(16.dp)

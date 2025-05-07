@@ -72,13 +72,17 @@ class BlogViewModel(
         }
     }
 
-    fun updateBlog(id: Long, title: String, content: String) {
+    fun updateBlog(id: Long, title: String, content: String, authorEmail: String, authorName: String) {
         viewModelScope.launch {
             try {
-
+                val author = UserDto(name = authorName, email = authorEmail)
+                val blog = Blog(title = title, content = content, author = author)
+                val response = RetrofitClient.api.updateBlog(id,blog)
+                println("Update Blog Response: $response")
+                _isPostSuccessful.value = response.isSuccessful
             } catch (e: Exception) {
                 e.printStackTrace()
-                println("Error: ${e.localizedMessage}")
+                _isPostSuccessful.value = false
             }
         }
     }

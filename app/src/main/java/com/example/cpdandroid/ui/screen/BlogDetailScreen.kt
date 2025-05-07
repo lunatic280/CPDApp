@@ -13,54 +13,73 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.cpdandroid.model.AuthViewModel
 import com.example.cpdandroid.model.BlogViewModel
 import com.example.cpdandroid.ui.components.CustomBottomBar
 import com.example.cpdandroid.ui.components.CustomTopBar
 
 @Composable
-fun BlogDetailScreen(id: Long, viewModel: BlogViewModel, navController: NavController) {
-    val blog by viewModel.selectedBlog.collectAsState()
+fun BlogDetailScreen(
+    id: Long,
+    blogViewModel: BlogViewModel,
+    authViewModel: AuthViewModel,
+    navController: NavController
+) {
+    // 1) blog 데이터 로드
+    val blog by blogViewModel.selectedBlog.collectAsState()
+    LaunchedEffect(id) {
+        blogViewModel.getBlog(id)
+    }
 
-    LaunchedEffect(Unit) {
-        viewModel.getBlog(id)
+    // 2) AuthViewModel 에서 userEmail 상태 직접 구독
+    //    AuthViewModel.kt 에 정의된 프로퍼티 이름입니다 :contentReference[oaicite:0]{index=0}:contentReference[oaicite:1]{index=1}
+    val userEmail by authViewModel.userEmail
+
+    // 3) 수정 권한 플래그 계산
+    val canEdit = remember(blog, userEmail) {
+        blog?.author?.email == userEmail
     }
 
     Scaffold(
-        topBar = {
-            CustomTopBar(title = "블로그 상세")
-        },
+        topBar = { CustomTopBar(title = "블로그 상세") },
         bottomBar = { CustomBottomBar(title = "하단 앱 바") }
     ) { innerPadding ->
         Column(
-            modifier = Modifier
+            Modifier
                 .fillMaxWidth()
                 .padding(innerPadding)
         ) {
-            blog?.let { // ✅ blog가 null이 아닐 때만 UI를 표시
-                LazyColumn {
-                    item {
-                        Text(text = "📌 제목: ${it.title}", modifier = Modifier.padding(16.dp))
-                        Text(text = "📝 내용: ${it.content}", modifier = Modifier.padding(16.dp))
-                    }
-                }
-            } ?: run {
-                Text(text = "블로그 데이터를 불러오는 중...", modifier = Modifier.padding(16.dp))
+            blog?.let {
+                Text("📌 제목: ${it.title}", Modifier.padding(16.dp))
+                Text("📝 내용: ${it.content}", Modifier.padding(16.dp))
+            } ?: Text("블로그 데이터를 불러오는 중...", Modifier.padding(16.dp))
+
+            Spacer(Modifier.weight(1f))
+
+            // 4) 수정 버튼: canEdit 에 따라 활성화/비활성화
+            Button(
+                onClick = { navController.navigate("BlogDetail/update/$id") },
+                enabled = canEdit,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+            ) {
+                Text(if (canEdit) "수정하기" else "수정 권한 없음")
             }
 
-            Spacer(modifier = Modifier.weight(1f)) // 버튼을 하단으로 밀기 위한 Spacer
-            Button(
-                onClick = { navController.navigate("BlogDetail/update/${id}") },
-                modifier = Modifier.fillMaxWidth().padding(16.dp)
-            ) {
-                Text("수정하기")
-            }
             Button(
                 onClick = { navController.popBackStack() },
-                modifier = Modifier.fillMaxWidth().padding(16.dp)
-            ) { Text("뒤로가기") }
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+            ) {
+                Text("뒤로가기")
+            }
         }
     }
 }
+
