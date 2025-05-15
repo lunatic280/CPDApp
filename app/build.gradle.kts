@@ -75,4 +75,6 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.6.2")
+    implementation("androidx.compose.material:material:1.6.0")
+    implementation("androidx.compose.material3:material3:1.2.0")
 }

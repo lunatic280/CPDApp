@@ -20,6 +20,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -34,6 +35,7 @@ fun LoginScreen(viewModel: AuthViewModel, navController: NavController,onSignupS
 
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    val uriHandler = LocalUriHandler.current
 
     Scaffold(
         topBar = {
@@ -77,6 +79,15 @@ fun LoginScreen(viewModel: AuthViewModel, navController: NavController,onSignupS
             ) {
                 Text("회원가입")
             }
+//            Button(
+//                onClick = {
+//                    // 백엔드가 제공하는 Kakao OAuth2 인증 엔드포인트로 이동
+//                    uriHandler.openUri("http://10.0.2.2:8080/oauth2/authorization/kakao")
+//                },
+//                Modifier.fillMaxWidth()
+//            ) {
+//                Text("카카오 로그인")
+//            }
 
             when (authState) {
                 is AuthState.Loading -> {

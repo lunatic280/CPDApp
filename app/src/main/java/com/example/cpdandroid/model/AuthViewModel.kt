@@ -1,5 +1,6 @@
 package com.example.cpdandroid.model
 
+import android.net.Uri
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -7,6 +8,7 @@ import com.example.app.network.RetrofitClient
 import com.example.cpdandroid.data.LoginDto
 import kotlinx.coroutines.launch
 import androidx.compose.runtime.State
+import com.example.app.network.RetrofitClient.api
 import com.example.cpdandroid.data.UserDto
 import kotlin.math.log
 
@@ -21,6 +23,9 @@ class AuthViewModel : ViewModel() {
     // 로그인 상태
     private val _authState = mutableStateOf<AuthState>(AuthState.Idle)
     val authState: State<AuthState> = _authState
+
+    private val _user = mutableStateOf<UserDto?>(null)
+    val user: State<UserDto?> = _user
 
     // 실시간 사용자 정보 저장
     private val _userEmail = mutableStateOf<String?>(null)
@@ -60,6 +65,11 @@ class AuthViewModel : ViewModel() {
                 if (response.isSuccessful) {
                     val msg = response.body()?.message ?: "로그인 성공"
                     _authState.value = AuthState.Success(msg)
+                    _user.value = UserDto(
+                        name = email.substringBefore("@"),
+                        email = email,
+                        password = null
+                    )
                     // 로그인 성공 시 사용자 정보 저장
                     _userEmail.value = email
                     _userName.value = email.substringBefore("@") // 예시: 이메일 앞부분 사용
@@ -72,6 +82,17 @@ class AuthViewModel : ViewModel() {
             }
         }
     }
+
+//    fun handleKakaoCallback(uri: Uri, onSuccess: () -> Unit) {
+//        // URI 예시: yourapp://oauth2redirect?accessToken=...&refreshToken=...
+//        val access = uri.getQueryParameter("accessToken") ?: return
+//        val refresh = uri.getQueryParameter("refreshToken") ?: return
+//        viewModelScope.launch {
+//            api.loginKakao(access, refresh)
+//            // 토큰을 안전한 저장소에 보관하는 로직 추가...
+//            onSuccess()
+//        }
+//    }
 
     fun resetState() {
         _authState.value = AuthState.Idle

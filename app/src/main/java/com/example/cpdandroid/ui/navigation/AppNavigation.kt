@@ -1,5 +1,6 @@
 package com.example.cpdandroid.ui.navigation
 
+import android.net.Uri
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
@@ -23,6 +24,13 @@ import com.example.cpdandroid.ui.screen.LoginScreen
 import com.example.cpdandroid.ui.screen.SignupScreen
 import com.example.cpdandroid.ui.screen.TestMainScreen
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.navigation.navDeepLink
+import com.example.cpdandroid.model.DogViewModel
+import com.example.cpdandroid.ui.screen.DogCreateScreen
+import com.example.cpdandroid.ui.screen.DogDetailScreen
+import com.example.cpdandroid.ui.screen.DogListScreen
+
+//import com.example.cpdandroid.ui.screen.OAuthCallbackScreen
 
 sealed class Screen(val route: String) {
     object Home : Screen("Home")
@@ -35,6 +43,7 @@ fun AppNavigation() {
     val navController = rememberNavController()
     val authViewModel: AuthViewModel = viewModel()
     val blogViewModel: BlogViewModel = viewModel()
+    val dogViewModel: DogViewModel = viewModel()
 
     NavHost(navController, startDestination = "login") {
         // 로그인 화면
@@ -118,5 +127,57 @@ fun AppNavigation() {
                 onSignupSuccess = { navController.navigate("login") }
             )
         }
+
+        composable("DogList") {
+            DogListScreen(
+                viewModel = dogViewModel,
+                navController = navController,
+                onDogClick = { id -> navController.navigate("DogDetail/$id") },
+                onAddClick = { navController.navigate("DogCreate") }
+            )
+        }
+        // 강아지 상세
+        composable(
+            "DogDetail/{id}",
+            arguments = listOf(navArgument("id") { type = NavType.LongType })
+        ) { backStackEntry ->
+            val id = backStackEntry.arguments?.getLong("id") ?: return@composable
+            DogDetailScreen(
+                dogId = id,
+                viewModel = dogViewModel,
+                navController = navController,
+                onEdit = { navController.navigate("DogUpdate/$id") },
+                onDelete = { navController.popBackStack("DogList", inclusive = false) }
+            )
+        }
+        // 강아지 등록
+        composable("DogCreate") {
+            val user = authViewModel.user.value
+            if (user != null) {
+                DogCreateScreen(
+                    viewModel = dogViewModel,
+                    navController = navController,
+                    user = user,  // 전체 UserDto 객체 전달
+                    onSubmit = { navController.popBackStack() }
+                )
+            } else {
+                // 로그인 정보 없으면 예외 처리 (예시: 로그인으로 이동)
+                LaunchedEffect(Unit) {
+                    navController.navigate("login") {
+                        popUpTo("DogCreate") { inclusive = true }
+                    }
+                }
+            }
+        }
+
+//        composable(
+//            route = "oauth2redirect?accessToken={accessToken}&refreshToken={refreshToken}",
+//            deepLinks = listOf(
+//                navDeepLink { uriPattern = "yourapp://oauth2redirect?accessToken={accessToken}&refreshToken={refreshToken}" }
+//            )
+//        ) { backStack ->
+//            val uri = Uri.parse(backStack.arguments?.getString("deepLinkUri"))
+//            OAuthCallbackScreen(uri, navController)
+//        }
     }
 }

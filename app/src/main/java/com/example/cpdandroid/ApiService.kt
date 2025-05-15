@@ -1,7 +1,9 @@
 package com.example.app.network
 
 import com.example.cpdandroid.data.Blog
+import com.example.cpdandroid.data.DogDto
 import com.example.cpdandroid.data.LoginDto
+import com.example.cpdandroid.data.TokenDto
 import com.example.cpdandroid.data.UserDto
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
@@ -17,6 +19,7 @@ import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Path
+import retrofit2.http.Query
 import java.net.CookieManager
 import java.net.CookiePolicy
 
@@ -47,10 +50,32 @@ interface ApiService {
     @POST("/api/auth/login")
     suspend fun login(@Body loginDto: LoginDto): Response<MessageResponse>
 
+    @GET("/dog/")
+    suspend fun getUserDog(): Response<List<DogDto?>>
+
+    @GET("/dog/{id}")
+    suspend fun getDog(@Path("id") id : Long): Response<DogDto>
+
+    @POST("/dog/registration-dog")
+    suspend fun registrationDog(@Body dogDto: DogDto): Response<MessageResponse>
+
+    @DELETE("/dog/delete/{id}")
+    suspend fun deleteDog(@Path("id") id: Long): Response<MessageResponse>
+
+
+
+//    // OAuth2 콜백으로 받은 토큰 저장 및 조회
+//    @GET("/api/auth/login/kakao")
+//    suspend fun loginKakao(
+//        @Query("accessToken") accessToken: String,
+//        @Query("refreshToken") refreshToken: String
+//    ): TokenDto
+
 }
 
 object RetrofitClient {
     private const val BASE_URL = "http://10.0.2.2:8080"
+    //private const val BASE_URL = "https://port-0-cpdserver-lzedf6rf40aa38e9.sel4.cloudtype.app"
 
 //    // CookieManager to accept and persist session cookies
 //    private val cookieManager = CookieManager().apply {
