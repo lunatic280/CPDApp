@@ -1,6 +1,7 @@
 package com.example.app.network
 
 import com.example.cpdandroid.data.Blog
+import com.example.cpdandroid.data.DogDto
 import com.example.cpdandroid.data.LoginDto
 import com.example.cpdandroid.data.UserDto
 import com.squareup.moshi.Moshi
@@ -46,6 +47,15 @@ interface ApiService {
 
     @POST("/api/auth/login")
     suspend fun login(@Body loginDto: LoginDto): Response<MessageResponse>
+
+    @GET("/dog")
+    suspend fun getMyDogs(): List<DogDto>
+
+    @POST("/dog/create-dog")
+    suspend fun createDog(@Body dog: DogDto): Response<DogDto>
+
+    @DELETE("/dog/{id}")
+    suspend fun deleteDog(@Path("id") id: Long)
 
 }
 

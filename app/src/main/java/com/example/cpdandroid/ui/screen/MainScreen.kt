@@ -62,6 +62,11 @@ fun TestMainScreen(navController: NavController) {
                     .fillMaxWidth()
                     .padding(16.dp)
             ) { Text("블로글 생성하기") }
+
+            Button(
+                onClick = { navController.navigate("DogList") },
+                modifier = Modifier.fillMaxWidth().padding(16.dp)
+            ) { Text("내 강아지 관리") }
         }
     }
 }

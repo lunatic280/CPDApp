@@ -23,6 +23,9 @@ import com.example.cpdandroid.ui.screen.LoginScreen
 import com.example.cpdandroid.ui.screen.SignupScreen
 import com.example.cpdandroid.ui.screen.TestMainScreen
 import androidx.compose.material3.CircularProgressIndicator
+import com.example.cpdandroid.model.DogViewModel
+import com.example.cpdandroid.ui.screen.DogCreateScreen
+import com.example.cpdandroid.ui.screen.DogListScreen
 
 sealed class Screen(val route: String) {
     object Home : Screen("Home")
@@ -35,6 +38,7 @@ fun AppNavigation() {
     val navController = rememberNavController()
     val authViewModel: AuthViewModel = viewModel()
     val blogViewModel: BlogViewModel = viewModel()
+    val dogViewModel: DogViewModel = viewModel()
 
     NavHost(navController, startDestination = "login") {
         // 로그인 화면
@@ -116,6 +120,21 @@ fun AppNavigation() {
                 viewModel = authViewModel,
                 navController = navController,
                 onSignupSuccess = { navController.navigate("login") }
+            )
+        }
+
+        composable("DogList") {
+            DogListScreen(
+                navController = navController,
+                dogViewModel = dogViewModel,
+                authViewModel = authViewModel
+            )
+        }
+        composable("DogCreate") {
+            DogCreateScreen(
+                navController = navController,
+                authViewModel = authViewModel,   // 반드시 전달
+                dogViewModel = dogViewModel      // 반드시 전달
             )
         }
     }
