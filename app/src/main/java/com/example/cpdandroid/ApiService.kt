@@ -2,6 +2,7 @@ package com.example.app.network
 
 import com.example.cpdandroid.data.Blog
 import com.example.cpdandroid.data.DogDto
+import com.example.cpdandroid.data.LocationDto
 import com.example.cpdandroid.data.LoginDto
 import com.example.cpdandroid.data.UserDto
 import com.squareup.moshi.Moshi
@@ -57,10 +58,13 @@ interface ApiService {
     @DELETE("/dog/{id}")
     suspend fun deleteDog(@Path("id") id: Long)
 
+    @POST("/dog/location")
+    suspend fun sendLocation(@Body locationDto: LocationDto): Response<Unit>
+
 }
 
 object RetrofitClient {
-    private const val BASE_URL = "http://10.0.2.2:8080"
+    private const val BASE_URL = "https://port-0-cpdserver-lzedf6rf40aa38e9.sel4.cloudtype.app"
 
 //    // CookieManager to accept and persist session cookies
 //    private val cookieManager = CookieManager().apply {

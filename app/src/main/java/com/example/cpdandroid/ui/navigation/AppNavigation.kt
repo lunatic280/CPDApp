@@ -1,5 +1,6 @@
 package com.example.cpdandroid.ui.navigation
 
+
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
@@ -26,6 +27,11 @@ import androidx.compose.material3.CircularProgressIndicator
 import com.example.cpdandroid.model.DogViewModel
 import com.example.cpdandroid.ui.screen.DogCreateScreen
 import com.example.cpdandroid.ui.screen.DogListScreen
+import com.example.cpdandroid.ui.screen.LocationTrackerScreen
+
+// ★ RetrofitClient 싱글톤 import 추가
+import com.example.app.network.RetrofitClient
+
 
 sealed class Screen(val route: String) {
     object Home : Screen("Home")
@@ -39,6 +45,9 @@ fun AppNavigation() {
     val authViewModel: AuthViewModel = viewModel()
     val blogViewModel: BlogViewModel = viewModel()
     val dogViewModel: DogViewModel = viewModel()
+
+    // 이 한 줄만 있으면 됨 (싱글톤으로 재사용)
+    val apiService = RetrofitClient.api
 
     NavHost(navController, startDestination = "login") {
         // 로그인 화면
@@ -136,6 +145,9 @@ fun AppNavigation() {
                 authViewModel = authViewModel,   // 반드시 전달
                 dogViewModel = dogViewModel      // 반드시 전달
             )
+        }
+        composable("Tracking") {
+            LocationTrackerScreen(api = apiService)
         }
     }
 }

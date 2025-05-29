@@ -67,6 +67,11 @@ fun TestMainScreen(navController: NavController) {
                 onClick = { navController.navigate("DogList") },
                 modifier = Modifier.fillMaxWidth().padding(16.dp)
             ) { Text("내 강아지 관리") }
+
+            Button(
+                onClick = { navController.navigate("Tracking") },
+                modifier = Modifier.fillMaxWidth().padding(16.dp)
+            ) { Text("실시간 위치 추적") }
         }
     }
 }
